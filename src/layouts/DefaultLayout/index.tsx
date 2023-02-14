@@ -1,13 +1,15 @@
 import { Outlet } from 'react-router-dom'
+import { Header } from '../../components/Header/Index'
 
-import { Header } from '../components/Header'
+// Styles
+import { LayoutContainer } from './styles'
 
 export function DefaultLayout() {
   return (
     // outlet = aonde vai o conteúdo
-    <div>
+    <LayoutContainer>
       <Header />
       <Outlet />
-    </div>
+    </LayoutContainer>
   )
 }
