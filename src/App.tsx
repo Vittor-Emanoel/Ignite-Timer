@@ -6,6 +6,7 @@ import { defaultTheme } from './styles/themes/default'
 
 export function App() {
   return (
+    // contexts providers
     <ThemeProvider theme={defaultTheme}>
       <BrowserRouter>
         <Router />
