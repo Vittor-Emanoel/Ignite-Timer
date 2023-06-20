@@ -1,4 +1,4 @@
-import { Play } from 'phosphor-react'
+import { Play } from "phosphor-react";
 import {
   CountdownContainer,
   FormContainer,
@@ -8,61 +8,76 @@ import {
   Separator,
   StartCountDownButton,
   TaskInput,
-} from './styles'
+} from "./styles";
 
-import { useState } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import * as zod from 'zod'
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as zod from "zod";
 
 const newCycleFormValidationSchema = zod.object({
-  task: zod.string().min(1, 'informe a tarefa'),
+  task: zod.string().min(1, "informe a tarefa"),
   minutesAmount: zod
     .number()
-    .min(5, 'o ciclo precisa ser de no minimo 5 minutos')
-    .max(60, 'o ciclo precisa ser de no máximo 60 minutos'),
-})
+    .min(5, "o ciclo precisa ser de no minimo 5 minutos")
+    .max(60, "o ciclo precisa ser de no máximo 60 minutos"),
+});
 
-type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>;
 
 interface Cycle {
-  id: string
-  task: string
-  minutesAmount: number
+  id: string;
+  task: string;
+  minutesAmount: number;
 }
 
 export function Home() {
-  const [cycles, setCycles] = useState<Cycle[]>([])
-  const [activeCycleId, setActiveCycleId] = useState<String | null>(null)
+  const [cycles, setCycles] = useState<Cycle[]>([]);
+  const [activeCycleId, setActiveCycleId] = useState<String | null>(null);
+  const [amountSecondsPassed, setAmountSecondesPassed] = useState(0);
 
   const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
     defaultValues: {
-      task: '',
+      task: "",
       minutesAmount: 0,
     },
-  })
+  });
 
   function handleCreateNewCycle(data: NewCycleFormData) {
-    const id = String(new Date().getTime())
+    const id = String(new Date().getTime());
 
     const newCycle: Cycle = {
       id,
       task: data.task,
       minutesAmount: data.minutesAmount,
-    }
+    };
 
     // sempre que a alteração de estado depender do valor anterior...
-    setCycles((state) => [...state, newCycle])
-    setActiveCycleId(id)
-    reset()
+    setCycles((state) => [...state, newCycle]);
+    setActiveCycleId(id);
+    reset();
   }
 
-  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
-  console.log(activeCycle)
+  // verificando se há um ciclo ativo
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
 
-  const task = watch('task')
-  const isSubmitDisabled = !task
+  // pegando o total os segundos do ciclo ativo = minutos do ciclo / 60
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
+
+  // pegando o tanto de segundos que já passou => se eu tiver um ciclo ativo, vai ser o total de segundos - o segundo que se passou
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0;
+
+  // pegando os minutos dos segundos que passou
+  const minutesAmount = Math.floor(currentSeconds / 60);
+  // pegando os segundos que sobra => se eu dividir todos os segundos por 60, quanto sobra?
+  const secondsAmount = currentSeconds % 60;
+
+  const minutes = String(minutesAmount).padStart(2, "0");
+  const seconds = String(secondsAmount).padStart(2, "0");
+
+  const task = watch("task");
+  const isSubmitDisabled = !task;
 
   return (
     <HomeContainer>
@@ -70,7 +85,7 @@ export function Home() {
         <FormContainer>
           <label htmlFor="task">Vou trabalhar em</label>
           <TaskInput
-            {...register('task')}
+            {...register("task")}
             id="task"
             type="text"
             list="task-suggestions"
@@ -84,7 +99,7 @@ export function Home() {
 
           <label htmlFor="minutesAmount">durante</label>
           <MinutesAmountInput
-            {...register('minutesAmount', { valueAsNumber: true })}
+            {...register("minutesAmount", { valueAsNumber: true })}
             id="minutesAmount"
             type="number"
             placeholder="00"
@@ -96,11 +111,11 @@ export function Home() {
         </FormContainer>
 
         <CountdownContainer>
-          <span>0</span>
-          <span>0</span>
+          <span>{minutes[0]}</span>
+          <span>{minutes[1]}</span>
           <Separator>:</Separator>
-          <span>0</span>
-          <span>0</span>
+          <span>{seconds[0]}</span>
+          <span>{seconds[1]}</span>
         </CountdownContainer>
 
         <StartCountDownButton disabled={isSubmitDisabled} type="submit">
@@ -109,5 +124,5 @@ export function Home() {
         </StartCountDownButton>
       </form>
     </HomeContainer>
-  )
+  );
 }

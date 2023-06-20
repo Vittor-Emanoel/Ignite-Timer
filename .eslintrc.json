@@ -1,3 +1,6 @@
 {
+  "rules": {
+    "prettier/prettier": "off"
+  },
   "extends": "@rocketseat/eslint-config/react"
 }
