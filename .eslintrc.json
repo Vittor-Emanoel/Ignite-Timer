@@ -1,6 +1,7 @@
 {
   "rules": {
-    "prettier/prettier": "off"
+    "prettier/prettier": "off",
+    "no-unused-vars": "off"
   },
   "extends": "@rocketseat/eslint-config/react"
 }
