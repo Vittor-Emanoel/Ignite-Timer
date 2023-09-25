@@ -1,7 +1,7 @@
-import { Route, Routes } from 'react-router'
-import { DefaultLayout } from './layouts/DefaultLayout'
-import { Home } from './pages/Home/Index'
-
+import { Route, Routes } from "react-router";
+import { DefaultLayout } from "./layouts/DefaultLayout";
+import { Home } from "./pages/Home/Index";
+import { History } from "./pages/History/Index";
 
 export function Router() {
   return (
@@ -11,5 +11,5 @@ export function Router() {
         <Route path="/history" element={<History />} />
       </Route>
     </Routes>
-  )
+  );
 }
